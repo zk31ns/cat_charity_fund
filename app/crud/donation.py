@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import select
+from sqlalchemy import false, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.base import CRUDBase
@@ -30,7 +30,7 @@ class CRUDDonation(CRUDBase):
         """Получить незакрытые пожертвования (для инвестирования)"""
         donations = await session.execute(
             select(Donation).where(
-                Donation.fully_invested == False
+                Donation.fully_invested.is_(false())
             ).order_by(Donation.create_date)
         )
         return donations.scalars().all()
