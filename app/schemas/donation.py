@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, Field, validator, PositiveInt
+from pydantic import BaseModel, PositiveInt
 
 
 class DonationBase(BaseModel):
@@ -19,7 +19,6 @@ class DonationDBUser(DonationBase):
 
     class Config:
         orm_mode = True
-        # from_attributes = True
 
 
 class DonationDBSuperuser(DonationDBUser):
@@ -31,4 +30,3 @@ class DonationDBSuperuser(DonationDBUser):
 
     class Config:
         orm_mode = True
-        # from_attributes = True

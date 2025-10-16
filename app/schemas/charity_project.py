@@ -53,4 +53,4 @@ class CharityProjectDB(CharityProjectBase):
     close_date: Optional[datetime] = None
 
     class Config:
-        from_attributes = True
+        orm_mode = True
