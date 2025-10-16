@@ -1,8 +1,7 @@
-# app/schemas/charity_project.py
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, Field, validator, PositiveInt
+from pydantic import BaseModel, Field, PositiveInt, validator
 
 
 class CharityProjectBase(BaseModel):

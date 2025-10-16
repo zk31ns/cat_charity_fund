@@ -1,6 +1,6 @@
-# app/api/validators.py
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from pydantic import PositiveInt
 
 from app.models.charity_project import CharityProject
 
@@ -46,8 +46,6 @@ async def check_charity_project_before_delete(
     Проверяет можно ли удалить проект.
     Нельзя удалить если уже внесены средства.
     """
-    # from app.crud.charity_project import charity_project_crud
-
     project = await check_charity_project_exists(project_id, session)
 
     if project.invested_amount > 0:
@@ -62,7 +60,7 @@ async def check_charity_project_before_delete(
 async def check_charity_project_before_update(
     project_id: int,
     session: AsyncSession,
-    full_amount: int = None,
+    full_amount: PositiveInt
 ) -> CharityProject:
     """
     Проверяет можно ли обновить проект.

@@ -1,17 +1,18 @@
-from typing import Optional, List
+from typing import List
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import Donation, User
 from app.crud.base import CRUDBase
+from app.models import Donation, User
 
 
 class CRUDDonation(CRUDBase):
     """CRUD операции для пожертвований"""
-    
+
     async def get_by_user(
-        self, 
-        session: AsyncSession, 
+        self,
+        session: AsyncSession,
         user: User
     ) -> List[Donation]:
         """Получить пожертвования конкретного пользователя"""
@@ -35,5 +36,4 @@ class CRUDDonation(CRUDBase):
         return donations.scalars().all()
 
 
-# Создаем экземпляр для использования
 donation_crud = CRUDDonation(Donation)

@@ -1,4 +1,3 @@
-# app/api/endpoints/user.py
 from fastapi import APIRouter
 
 from app.core.user import auth_backend, fastapi_users
@@ -16,12 +15,6 @@ router.include_router(
     prefix='/auth',
     tags=['auth'],
 )
-# router.include_router(
-#     fastapi_users.get_users_router(UserRead, UserUpdate),
-#     prefix='/users',
-#     tags=['users'],
-# )
-
 users_router = fastapi_users.get_users_router(UserRead, UserUpdate)
 users_router.routes = [
     rout for rout in users_router.routes if rout.name != 'users:delete_user'

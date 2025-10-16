@@ -1,6 +1,6 @@
-# app/crud/charity_project.py
-from typing import Optional, List
-from sqlalchemy import select
+from typing import List, Optional
+
+from sqlalchemy import false, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.base import CRUDBase
@@ -30,7 +30,7 @@ class CRUDCharityProject(CRUDBase):
         """Получить незакрытые проекты (для инвестирования)"""
         projects = await session.execute(
             select(CharityProject).where(
-                CharityProject.fully_invested == False
+                CharityProject.fully_invested.is_(false())
             ).order_by(CharityProject.create_date)
         )
         return projects.scalars().all()

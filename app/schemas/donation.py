@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Optional
+
 from pydantic import BaseModel, PositiveInt
 
 
@@ -13,7 +14,6 @@ class DonationCreate(DonationBase):
 
 
 class DonationDBUser(DonationBase):
-    """Схема для отображения пользователю его пожертвований"""
     id: int
     create_date: datetime
 
@@ -22,7 +22,6 @@ class DonationDBUser(DonationBase):
 
 
 class DonationDBSuperuser(DonationDBUser):
-    """Схема для суперпользователя - все поля"""
     invested_amount: int
     fully_invested: bool
     close_date: Optional[datetime] = None
