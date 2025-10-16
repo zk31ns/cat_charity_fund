@@ -41,6 +41,9 @@ class CharityProjectUpdate(BaseModel):
             raise ValueError('Название не может быть пустым')
         return value
 
+    class Config:
+        extra = 'forbid'
+
 
 class CharityProjectDB(CharityProjectBase):
     id: int

@@ -48,10 +48,9 @@ async def create_charity_project(
     """
     await check_charity_project_name_duplicate(project.name, session)
     new_project = await charity_project_crud.create(project, session)
-    
-    # ДОБАВЛЯЕМ: запускаем процесс инвестирования
+
     await invest_funds(session, new_project)
-    
+
     return new_project
 
 
