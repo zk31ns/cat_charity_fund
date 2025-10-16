@@ -36,12 +36,12 @@ class CRUDBase:
             obj_in,
             session: AsyncSession,
             user: Optional[User] = None,
-            **kwargs: Any  # Добавляем для дополнительных полей
+            **kwargs: Any
     ):
         obj_in_data = obj_in.dict()
         if user is not None:
             obj_in_data['user_id'] = user.id
-        obj_in_data.update(kwargs)  # Добавляем дополнительные поля
+        obj_in_data.update(kwargs)
         db_obj = self.model(**obj_in_data)
         session.add(db_obj)
         await session.commit()

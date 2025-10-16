@@ -78,7 +78,7 @@ async def check_charity_project_before_update(
 
     if full_amount is not None and full_amount < project.invested_amount:
         raise HTTPException(
-            status_code=422,
+            status_code=400,
             detail='Нельзя установить требуемую сумму меньше уже внесенной!'
         )
 
