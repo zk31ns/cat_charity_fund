@@ -85,11 +85,11 @@ class CRUDBase(Generic[ModelType]):
         """Получить объекты по атрибутам модели.
 
         Args:
-            session: Асинхронная сессия
-            **filters: Параметры фильтрации (поле=значение)
+            session: Асинхронная сессия.
+            **filters: Параметры фильтрации (поле=значение).
 
         Returns:
-            List[ModelType]: Список найденных объектов
+            List[ModelType]: Список найденных объектов.
         """
         query = select(self.model)
         for field, value in filters.items():
@@ -106,11 +106,11 @@ class CRUDBase(Generic[ModelType]):
         """Получить один объект по атрибутам модели.
 
         Args:
-            session: Асинхронная сессия
-            **filters: Параметры фильтрации (поле=значение)
+            session: Асинхронная сессия.
+            **filters: Параметры фильтрации (поле=значение).
 
         Returns:
-            Optional[ModelType]: Найденный объект или None
+            Optional[ModelType]: Найденный объект или None.
         """
         query = select(self.model)
         for field, value in filters.items():

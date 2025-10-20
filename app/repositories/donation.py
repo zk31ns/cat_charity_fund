@@ -8,14 +8,14 @@ from app.models import Donation, User
 
 
 class CRUDDonation(CRUDBase[Donation]):
-    """CRUD операции для пожертвований"""
+    """CRUD операции для пожертвований."""
 
     async def get_by_user(
         self,
         session: AsyncSession,
         user: User
     ) -> List[Donation]:
-        """Получить пожертвования конкретного пользователя"""
+        """Получить пожертвования конкретного пользователя."""
         donations = await session.execute(
             select(Donation).where(
                 Donation.user_id == user.id
@@ -27,7 +27,7 @@ class CRUDDonation(CRUDBase[Donation]):
         self,
         session: AsyncSession,
     ) -> List[Donation]:
-        """Получить незакрытые пожертвования (для инвестирования)"""
+        """Получить незакрытые пожертвования (для инвестирования)."""
         donations = await session.execute(
             select(Donation).where(
                 Donation.fully_invested.is_(false())

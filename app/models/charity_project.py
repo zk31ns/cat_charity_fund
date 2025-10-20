@@ -8,7 +8,7 @@ class CharityProject(InvestmentBase):
 
     Attributes:
         name: Название проекта (уникальное)
-        description: Описание проекта
+        description: Описание проекта.
     """
     __tablename__ = 'charityproject'
 

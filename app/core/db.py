@@ -26,7 +26,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
     """Асинхронный генератор сессий для Dependency Injection.
 
     Yields:
-        AsyncSession: Асинхронная сессия для работы с базой данных
+        AsyncSession: Асинхронная сессия для работы с базой данных.
     """
     async with AsyncSessionLocal() as async_session:
         yield async_session
