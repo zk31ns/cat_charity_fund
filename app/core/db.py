@@ -1,3 +1,5 @@
+from typing import AsyncGenerator
+
 from sqlalchemy import Column, Integer
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import declarative_base, declared_attr, sessionmaker
@@ -20,6 +22,11 @@ engine = create_async_engine(settings.database_url)
 AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession)
 
 
-async def get_async_session():
+async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
+    """Асинхронный генератор сессий для Dependency Injection.
+
+    Yields:
+        AsyncSession: Асинхронная сессия для работы с базой данных
+    """
     async with AsyncSessionLocal() as async_session:
         yield async_session

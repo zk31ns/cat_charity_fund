@@ -3,7 +3,7 @@ from typing import List, Optional
 from sqlalchemy import false, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.crud.base import CRUDBase
+from app.repositories.base import CRUDBase
 from app.models.charity_project import CharityProject
 
 

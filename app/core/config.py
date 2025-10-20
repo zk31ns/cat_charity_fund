@@ -14,6 +14,8 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = '.env'
+        env_prefix = 'CAT_FUND_'
+        case_sensitive = False
 
 
 settings = Settings()

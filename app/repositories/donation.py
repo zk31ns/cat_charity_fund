@@ -3,11 +3,11 @@ from typing import List
 from sqlalchemy import false, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.crud.base import CRUDBase
+from app.repositories.base import CRUDBase
 from app.models import Donation, User
 
 
-class CRUDDonation(CRUDBase):
+class CRUDDonation(CRUDBase[Donation]):
     """CRUD операции для пожертвований"""
 
     async def get_by_user(

@@ -39,10 +39,10 @@ cd cat_charity_fund
 Создать `.env` файл с переменными окружения:
 
 ```
-SECRET = '...'
-FIRST_SUPERUSER_EMAIL = '...'
-FIRST_SUPERUSER_PASSWORD = '...'
-DATABASE_URL=sqlite+aiosqlite:///./fastapi.db
+CAT_FUND_SECRET = '...'
+CAT_FUND_FIRST_SUPERUSER_EMAIL = '...'
+CAT_FUND_FIRST_SUPERUSER_PASSWORD = '...'
+CAT_FUND_DATABASE_URL=sqlite+aiosqlite:///./fastapi.db
 ```
 
 Cоздать и активировать виртуальное окружение:

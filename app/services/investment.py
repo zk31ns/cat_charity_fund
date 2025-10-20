@@ -4,22 +4,29 @@ from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import CharityProject, Donation
+from app.models.base import InvestmentBase
 
 
 async def invest_funds(
     session: AsyncSession,
-    new_obj
+    new_obj: InvestmentBase,
 ) -> None:
-    """
-    Универсальная функция для инвестирования средств
-    между проектами и пожертвованиями
+    """Универсальная функция для инвестирования средств.
+
+    Распределяет средства между проектами и пожертвованиями.
+
+    Args:
+        session: Асинхронная сессия для работы с базой данных.
+        new_obj: Новый объект для инвестирования.
+
+    Note:
+        Автоматически определяет тип объекта и выбирает
+        открытые объекты для распределения средств.
     """
     if isinstance(new_obj, CharityProject):
         open_objects = await get_open_donations(session)
-    elif isinstance(new_obj, Donation):
-        open_objects = await get_open_projects(session)
     else:
-        raise ValueError("Неизвестный тип объекта")
+        open_objects = await get_open_projects(session)
 
     await distribute_funds(session, new_obj, open_objects)
     await session.commit()
@@ -27,24 +34,47 @@ async def invest_funds(
 
 
 async def get_open_projects(session: AsyncSession) -> List[CharityProject]:
-    """Получить открытые проекты"""
-    from app.crud.charity_project import charity_project_crud
+    """Получает список открытых благотворительных проектов.
+
+    Args:
+        session: Асинхронная сессия для работы с базой данных.
+
+    Returns:
+        List[CharityProject]: Список открытых проектов.
+    """
+    from app.repositories.charity_project import charity_project_crud
     return await charity_project_crud.get_open_projects(session)
 
 
 async def get_open_donations(session: AsyncSession) -> List[Donation]:
-    """Получить открытые пожертвования"""
-    from app.crud.donation import donation_crud
+    """Получает список открытых пожертвований.
+
+    Args:
+        session: Асинхронная сессия для работы с базой данных.
+
+    Returns:
+        List[Donation]: Список открытых пожертвований.
+    """
+    from app.repositories.donation import donation_crud
     return await donation_crud.get_open_donations(session)
 
 
 async def distribute_funds(
     session: AsyncSession,
-    new_obj,
-    open_objects: List
+    new_obj: InvestmentBase,
+    open_objects: List[InvestmentBase],
 ) -> None:
-    """Распределить средства между объектами"""
+    """Распределяет средства между объектами инвестирования.
 
+    Args:
+        session: Асинхронная сессия для работы с базой данных.
+        new_obj: Новый объект для инвестирования.
+        open_objects: Список открытых объектов.
+
+    Note:
+        Автоматически закрывает объекты, когда они полностью
+        инвестированы, устанавливая флаг и дату закрытия.
+    """
     required_amount = new_obj.full_amount - new_obj.invested_amount
 
     for obj in open_objects:
