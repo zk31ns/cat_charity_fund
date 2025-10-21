@@ -12,6 +12,7 @@ class Donation(InvestmentBase):
         comment: Комментарий к пожертвованию.
         user: Связь с пользователем.
     """
+
     __tablename__ = 'donation'
 
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)

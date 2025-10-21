@@ -12,6 +12,7 @@ class CharityProjectBase(BaseModel):
         description: Описание проекта (не может быть пустым).
         full_amount: Требуемая сумма для проекта (положительное число).
     """
+
     name: str = Field(..., min_length=1, max_length=100)
     description: str = Field(..., min_length=1)
     full_amount: PositiveInt
@@ -29,6 +30,7 @@ class CharityProjectBase(BaseModel):
         Raises:
             ValueError: Если описание состоит только из пробелов.
         """
+
         if not value.strip():
             raise ValueError('Описание не может быть пустым')
         return value
@@ -46,6 +48,7 @@ class CharityProjectUpdate(BaseModel):
         description: Новое описание проекта (опционально).
         full_amount: Новая требуемая сумма (опционально).
     """
+
     name: Optional[str] = Field(None, min_length=1, max_length=100)
     description: Optional[str] = Field(None, min_length=1)
     full_amount: Optional[PositiveInt] = None
@@ -63,6 +66,7 @@ class CharityProjectUpdate(BaseModel):
         Raises:
             ValueError: Если описание состоит только из пробелов.
         """
+
         if value is not None and not value.strip():
             raise ValueError('Описание не может быть пустым')
         return value
@@ -80,6 +84,7 @@ class CharityProjectUpdate(BaseModel):
         Raises:
             ValueError: Если название состоит только из пробелов.
         """
+
         if value is not None and not value.strip():
             raise ValueError('Название не может быть пустым')
         return value
@@ -98,6 +103,7 @@ class CharityProjectDB(CharityProjectBase):
         create_date: Дата создания проекта.
         close_date: Дата закрытия проекта (если инвестирован полностью).
     """
+
     id: int
     invested_amount: int = 0
     fully_invested: bool = False

@@ -11,6 +11,7 @@ class DonationBase(BaseModel):
         full_amount: Сумма пожертвования (положительное число).
         comment: Комментарий к пожертвованию (опционально).
     """
+
     full_amount: PositiveInt
     comment: Optional[str] = None
 
@@ -28,6 +29,7 @@ class DonationDBUser(DonationBase):
         id: Уникальный идентификатор пожертвования.
         create_date: Дата создания пожертвования.
     """
+
     id: int
     create_date: datetime
 
@@ -46,6 +48,7 @@ class DonationDBSuperuser(DonationDBUser):
         close_date: Дата закрытия инвестирования.
         user_id: Идентификатор пользователя, сделавшего пожертвование.
     """
+
     invested_amount: int
     fully_invested: bool
     close_date: Optional[datetime] = None

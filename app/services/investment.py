@@ -3,8 +3,10 @@ from typing import List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import CharityProject, Donation
+from app.models import CharityProject
 from app.models.base import InvestmentBase
+from app.repositories.charity_project import charity_project_crud
+from app.repositories.donation import donation_crud
 
 
 async def invest_funds(
@@ -24,39 +26,13 @@ async def invest_funds(
         открытые объекты для распределения средств.
     """
     if isinstance(new_obj, CharityProject):
-        open_objects = await get_open_donations(session)
+        open_objects = await donation_crud.get_open_objects(session)
     else:
-        open_objects = await get_open_projects(session)
+        open_objects = await charity_project_crud.get_open_objects(session)
 
     await distribute_funds(session, new_obj, open_objects)
     await session.commit()
     await session.refresh(new_obj)
-
-
-async def get_open_projects(session: AsyncSession) -> List[CharityProject]:
-    """Получает список открытых благотворительных проектов.
-
-    Args:
-        session: Асинхронная сессия для работы с базой данных.
-
-    Returns:
-        List[CharityProject]: Список открытых проектов.
-    """
-    from app.repositories.charity_project import charity_project_crud
-    return await charity_project_crud.get_open_projects(session)
-
-
-async def get_open_donations(session: AsyncSession) -> List[Donation]:
-    """Получает список открытых пожертвований.
-
-    Args:
-        session: Асинхронная сессия для работы с базой данных.
-
-    Returns:
-        List[Donation]: Список открытых пожертвований.
-    """
-    from app.repositories.donation import donation_crud
-    return await donation_crud.get_open_donations(session)
 
 
 async def distribute_funds(

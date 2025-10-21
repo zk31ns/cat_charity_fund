@@ -10,6 +10,7 @@ class CharityProject(InvestmentBase):
         name: Название проекта (уникальное)
         description: Описание проекта.
     """
+
     __tablename__ = 'charityproject'
 
     name = Column(String(100), unique=True, nullable=False)

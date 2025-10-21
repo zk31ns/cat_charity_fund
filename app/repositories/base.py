@@ -1,5 +1,5 @@
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy import select
+from sqlalchemy import false, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from typing import Any, List, Optional, Type, TypeVar, Generic
@@ -118,3 +118,24 @@ class CRUDBase(Generic[ModelType]):
 
         db_obj = await session.execute(query)
         return db_obj.scalars().first()
+
+    async def get_open_objects(
+        self,
+        session: AsyncSession,
+    ) -> List[ModelType]:
+        """Получить незакрытые объекты (для инвестирования).
+
+        Args:
+            session: Асинхронная сессия.
+
+        Returns:
+            List[ModelType]: Список незакрытых объектов.
+        """
+        objects = await session.execute(
+            select(self.model).where(
+                self.model.fully_invested.is_(false())  # type: ignore
+            ).order_by(
+                self.model.create_date  # type: ignore
+            )
+        )
+        return objects.scalars().all()
