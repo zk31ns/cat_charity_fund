@@ -3,33 +3,31 @@ from typing import List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import CharityProject
 from app.models.base import InvestmentBase
-from app.repositories.charity_project import charity_project_crud
-from app.repositories.donation import donation_crud
+from app.repositories.base import CRUDBase
 
 
 async def invest_funds(
     session: AsyncSession,
     new_obj: InvestmentBase,
+    target_crud: CRUDBase,
 ) -> None:
     """Универсальная функция для инвестирования средств.
 
-    Распределяет средства между проектами и пожертвованиями.
+    Распределяет средства между новым объектом и открытыми объектами
+    противоположного типа (проекты ↔ пожертвования).
 
     Args:
-        session: Асинхронная сессия для работы с базой данных.
-        new_obj: Новый объект для инвестирования.
-
-    Note:
-        Автоматически определяет тип объекта и выбирает
-        открытые объекты для распределения средств.
+        session:
+            Асинхронная сессия для работы с базой данных.
+        new_obj:
+            Новый объект для инвестирования (проект или пожертвование).
+        target_crud:
+            CRUD-репозиторий для поиска открытых объектов, в которые можно
+            инвестировать (например, donation_crud при создании проекта,
+            или charity_project_crud — при создании пожертвования).
     """
-    if isinstance(new_obj, CharityProject):
-        open_objects = await donation_crud.get_open_objects(session)
-    else:
-        open_objects = await charity_project_crud.get_open_objects(session)
-
+    open_objects = await target_crud.get_open_objects(session)
     await distribute_funds(session, new_obj, open_objects)
     await session.commit()
     await session.refresh(new_obj)
@@ -42,14 +40,13 @@ async def distribute_funds(
 ) -> None:
     """Распределяет средства между объектами инвестирования.
 
+    Автоматически закрывает объекты (устанавливает флаг `fully_invested`
+    и `close_date`), когда они полностью проинвестированы.
+
     Args:
         session: Асинхронная сессия для работы с базой данных.
         new_obj: Новый объект для инвестирования.
-        open_objects: Список открытых объектов.
-
-    Note:
-        Автоматически закрывает объекты, когда они полностью
-        инвестированы, устанавливая флаг и дату закрытия.
+        open_objects: Список открытых объектов (проектов или пожертвований).
     """
     required_amount = new_obj.full_amount - new_obj.invested_amount
 
@@ -65,10 +62,10 @@ async def distribute_funds(
 
         if obj.invested_amount == obj.full_amount:
             obj.fully_invested = True
-            obj.close_date = datetime.now()
+            obj.close_date = datetime.utcnow()
 
         required_amount -= investment_amount
 
     if new_obj.invested_amount == new_obj.full_amount:
         new_obj.fully_invested = True
-        new_obj.close_date = datetime.now()
+        new_obj.close_date = datetime.utcnow()

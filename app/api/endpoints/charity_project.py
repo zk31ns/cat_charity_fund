@@ -9,6 +9,7 @@ from app.schemas.charity_project import (
     CharityProjectDB,
     CharityProjectUpdate,
 )
+from app.repositories.donation import donation_crud
 from app.api.validators import (
     check_charity_project_name_duplicate,
     check_charity_project_before_delete,
@@ -49,7 +50,7 @@ async def create_charity_project(
     """
     await check_charity_project_name_duplicate(project.name, session)
     new_project = await charity_project_crud.create(project, session)
-    await invest_funds(session, new_project)
+    await invest_funds(session, new_project, donation_crud)
     return new_project
 
 

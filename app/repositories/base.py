@@ -11,6 +11,7 @@ ModelType = TypeVar('ModelType')
 
 
 class CRUDBase(Generic[ModelType]):
+    """Базовый CRUD-класс для работы с моделями SQLAlchemy."""
 
     def __init__(self, model: Type[ModelType]):
         self.model = model
@@ -20,6 +21,15 @@ class CRUDBase(Generic[ModelType]):
         obj_id: int,
         session: AsyncSession,
     ) -> Optional[ModelType]:
+        """Получает объект по его ID.
+
+        Args:
+            obj_id: Идентификатор объекта.
+            session: Асинхронная сессия для работы с базой данных.
+
+        Returns:
+            Найденный объект или None, если не найден.
+        """
         db_obj = await session.execute(
             select(self.model).where(
                 self.model.id == obj_id  # type: ignore
@@ -31,6 +41,14 @@ class CRUDBase(Generic[ModelType]):
         self,
         session: AsyncSession
     ) -> List[ModelType]:
+        """Получает все объекты модели.
+
+        Args:
+            session: Асинхронная сессия для работы с базой данных.
+
+        Returns:
+            Список всех объектов модели.
+        """
         db_objs = await session.execute(select(self.model))
         return db_objs.scalars().all()
 
@@ -41,6 +59,18 @@ class CRUDBase(Generic[ModelType]):
         user: Optional[User] = None,
         **kwargs: Any
     ) -> ModelType:
+        """Создаёт новый объект в базе данных.
+
+        Args:
+            obj_in: Данные для создания объекта (Pydantic-модель).
+            session: Асинхронная сессия для работы с базой данных.
+            user: Пользователь, от имени которого создаётся объект
+                (опционально, используется для установки user_id).
+            **kwargs: Дополнительные поля для создания объекта.
+
+        Returns:
+            Созданный объект.
+        """
         obj_in_data = obj_in.dict()
         if user is not None:
             obj_in_data['user_id'] = user.id
@@ -57,6 +87,16 @@ class CRUDBase(Generic[ModelType]):
         obj_in,
         session: AsyncSession,
     ) -> ModelType:
+        """Обновляет существующий объект.
+
+        Args:
+            db_obj: Объект из базы данных для обновления.
+            obj_in: Данные для обновления (Pydantic-модель).
+            session: Асинхронная сессия для работы с базой данных.
+
+        Returns:
+            Обновлённый объект.
+        """
         obj_data = jsonable_encoder(db_obj)
         update_data = obj_in.dict(exclude_unset=True)
 
@@ -73,6 +113,15 @@ class CRUDBase(Generic[ModelType]):
         db_obj: ModelType,
         session: AsyncSession,
     ) -> ModelType:
+        """Удаляет объект из базы данных.
+
+        Args:
+            db_obj: Объект из базы данных для удаления.
+            session: Асинхронная сессия для работы с базой данных.
+
+        Returns:
+            Удалённый объект.
+        """
         await session.delete(db_obj)
         await session.commit()
         return db_obj

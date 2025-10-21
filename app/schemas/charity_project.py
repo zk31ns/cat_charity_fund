@@ -30,7 +30,6 @@ class CharityProjectBase(BaseModel):
         Raises:
             ValueError: Если описание состоит только из пробелов.
         """
-
         if not value.strip():
             raise ValueError('Описание не может быть пустым')
         return value
@@ -66,7 +65,6 @@ class CharityProjectUpdate(BaseModel):
         Raises:
             ValueError: Если описание состоит только из пробелов.
         """
-
         if value is not None and not value.strip():
             raise ValueError('Описание не может быть пустым')
         return value
@@ -84,7 +82,6 @@ class CharityProjectUpdate(BaseModel):
         Raises:
             ValueError: Если название состоит только из пробелов.
         """
-
         if value is not None and not value.strip():
             raise ValueError('Название не может быть пустым')
         return value
