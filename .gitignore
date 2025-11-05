@@ -62,6 +62,7 @@ db.sqlite3
 db.sqlite3-journal
 test.db
 fastapi.db
+qrkot.json
 
 # Flask stuff:
 instance/

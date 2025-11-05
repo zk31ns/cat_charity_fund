@@ -4,33 +4,6 @@ from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.base import InvestmentBase
-from app.repositories.base import CRUDBase
-
-
-async def invest_funds(
-    session: AsyncSession,
-    new_obj: InvestmentBase,
-    target_crud: CRUDBase,
-) -> None:
-    """Универсальная функция для инвестирования средств.
-
-    Распределяет средства между новым объектом и открытыми объектами
-    противоположного типа (проекты ↔ пожертвования).
-
-    Args:
-        session:
-            Асинхронная сессия для работы с базой данных.
-        new_obj:
-            Новый объект для инвестирования (проект или пожертвование).
-        target_crud:
-            CRUD-репозиторий для поиска открытых объектов, в которые можно
-            инвестировать (например, donation_crud при создании проекта,
-            или charity_project_crud — при создании пожертвования).
-    """
-    open_objects = await target_crud.get_open_objects(session)
-    await distribute_funds(session, new_obj, open_objects)
-    await session.commit()
-    await session.refresh(new_obj)
 
 
 async def distribute_funds(

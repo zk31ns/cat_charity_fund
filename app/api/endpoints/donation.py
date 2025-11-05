@@ -11,7 +11,6 @@ from app.schemas.donation import (
     DonationDBUser,
     DonationDBSuperuser,
 )
-from app.services.investment import invest_funds
 
 router = APIRouter()
 
@@ -28,10 +27,12 @@ async def create_donation(
     user: User = Depends(current_user),
 ):
     """Создать пожертвование."""
-    new_donation = await donation_crud.create(
-        donation, session, user=user
+    new_donation = await donation_crud.create_and_invest(
+        session=session,
+        obj_in=donation,
+        user=user,
+        opposite_crud=charity_project_crud,
     )
-    await invest_funds(session, new_donation, charity_project_crud)
     return new_donation
 
 

@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.db import get_async_session
 from app.core.user import current_superuser
 from app.repositories.charity_project import charity_project_crud
+from app.repositories.donation import donation_crud
 from app.schemas.charity_project import (
     CharityProjectCreate,
     CharityProjectDB,
@@ -15,7 +16,6 @@ from app.api.validators import (
     check_charity_project_before_delete,
     check_charity_project_before_update,
 )
-from app.services.investment import invest_funds
 
 router = APIRouter()
 
@@ -49,8 +49,11 @@ async def create_charity_project(
     Создает благотворительный проект.
     """
     await check_charity_project_name_duplicate(project.name, session)
-    new_project = await charity_project_crud.create(project, session)
-    await invest_funds(session, new_project, donation_crud)
+    new_project = await charity_project_crud.create_and_invest(
+        session=session,
+        obj_in=project,
+        opposite_crud=donation_crud,
+    )
     return new_project
 
 
